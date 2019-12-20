@@ -1,0 +1,13 @@
+items:
+  - label: NX1
+    script: curl -o /dev/null -s -w '%{time_total}'  https://nx1.cz
+    unit: 's'
+  - label: F3L1X
+    script: curl -o /dev/null -s -w '%{time_total}'  https://f3l1x.io
+    unit: 's'
+  - label: 404
+    script: curl -o /dev/null -s -w '%{time_total}'  https://this-better-not.exist
+    unit: 's'
+  - label: GOOGLE
+    script: curl -o /dev/null -s -w '%{time_total}'  https://google.com
+    unit: 's'

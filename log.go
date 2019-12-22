@@ -26,7 +26,7 @@ var LogLevel = LogLevelDebug
 // LogPanic formats and prints a given log on STDERR and panics.
 func LogPanic(format string, a ...interface{}) {
 	LogErr(format, a)
-	panic(nil)
+	panic("")
 }
 
 // LogErr formats and prints a given log on STDERR.

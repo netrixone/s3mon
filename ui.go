@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"github.com/jroimartin/gocui"
-	"log"
 	"strconv"
 	"strings"
 )
@@ -17,13 +16,13 @@ var (
 func initGui(config *Config) *gocui.Gui {
 	gui, err := gocui.NewGui(gocui.OutputNormal)
 	if err != nil {
-		log.Panicln(err)
+		LogPanic(err.Error())
 	}
 
 	maxX, maxY := gui.Size()
 	for i, item := range config.Items {
 		if err := createItemView(item, i, maxX, maxY, gui); err != nil {
-			panic(err)
+			LogPanic(err.Error())
 		}
 	}
 
@@ -59,7 +58,7 @@ func createItemView(item *Item, col int, maxX int, maxY int, gui *gocui.Gui) err
 	view.Wrap = true
 	view.Overwrite = true
 
-	fmt.Fprintln(view, " loading")
+	fmt.Fprint(view, "\n\n loading")
 	return nil
 }
 
@@ -71,6 +70,7 @@ func updateItemView(item *Item, result string, gui *gocui.Gui) {
 		}
 
 		view.Clear()
+		fmt.Fprint(view, "\n\n ")
 
 		if result == ResultErr {
 			// Something bad happened, the service may not be available.

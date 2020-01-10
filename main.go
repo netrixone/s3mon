@@ -11,7 +11,7 @@ import (
 
 const (
 	prog        = "s3mon"
-	version     = "1.0"
+	version     = "1.1"
 	author      = "stuchl4n3k"
 	description = "s3mon - simple service status monitor v" + version + " by " + author
 )
@@ -54,25 +54,27 @@ func main() {
 	// GUI:
 	gui := initGui(config)
 	defer closeGui(gui)
-	go monitorItems(config.Items, gui)
+	go updateItems(config.Items, gui)
 	runMainLoop(gui)
 }
 
-func monitorItems(items []*Item, gui *gocui.Gui) {
+func updateItems(items []*Item, gui *gocui.Gui) {
 	for {
 		for _, item := range items {
-			result := monitorItem(item)
-			updateItemView(item, result, gui)
-
+			updateItem(item, gui)
 			time.Sleep(1 * time.Second)
 		}
 	}
 }
 
+func updateItem(item *Item, gui *gocui.Gui) {
+	result := monitorItem(item)
+	updateItemView(item, result, gui)
+}
+
 func monitorItem(item *Item) string {
 	output, err := runScript(item.Script, item.Label)
 	if err != nil {
-		// LogErr(err.Error())
 		return ResultErr
 	}
 

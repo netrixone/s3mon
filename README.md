@@ -24,7 +24,7 @@ _**DISCLAIMER:** This tool is still under wild development!_
 ```bash
 usage: s3mon [-h|--help] [-v|--version] [-V|--verbose] [-c|--config "<value>"]
 
-             s3mon - simple service status monitor v1.0 by stuchl4n3k
+             s3mon - simple service status monitor v1.1 by stuchl4n3k
 
 Arguments:
 

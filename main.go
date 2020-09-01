@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/akamensky/argparse"
-	"github.com/jroimartin/gocui"
+	"github.com/awesome-gocui/gocui"
 	"os"
 	"os/exec"
 	"time"

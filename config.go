@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/jroimartin/gocui"
+	"github.com/awesome-gocui/gocui"
 	"gopkg.in/yaml.v3"
 	"io/ioutil"
 	"log"
@@ -9,7 +9,7 @@ import (
 
 const (
 	ResultErr   = "ERR"
-	OkBgColor = gocui.ColorGreen
+	OkBgColor = gocui.Attribute(41)
 	OkFgColor = gocui.ColorBlack
 	WarnBgColor = gocui.ColorYellow
 	WarnFgColor = gocui.ColorBlack

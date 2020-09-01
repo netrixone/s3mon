@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/jroimartin/gocui"
+	"github.com/awesome-gocui/gocui"
 	"net"
 	"strconv"
 	"strings"
@@ -20,7 +20,7 @@ var (
 )
 
 func initGui(config *Config) *gocui.Gui {
-	gui, err := gocui.NewGui(gocui.OutputNormal)
+	gui, err := gocui.NewGui(gocui.Output256, false)
 	if err != nil {
 		LogPanic(err.Error())
 	}
@@ -42,8 +42,8 @@ func initGui(config *Config) *gocui.Gui {
 }
 
 func createToolBarView(gui *gocui.Gui) {
-	view, err := gui.SetView("toolbar", plotterX, plotterY, maxX-1, plotterY+toolBarHeight)
-	if err != nil && err != gocui.ErrUnknownView {
+	view, err := gui.SetView("toolbar", plotterX, plotterY, maxX-1, plotterY+toolBarHeight, 0)
+	if !gocui.IsUnknownView(err) {
 		LogPanic(err.Error())
 	}
 
@@ -74,8 +74,8 @@ func createMonitoringItemView(item *Item, col int, maxX int, maxY int, gui *gocu
 	x := plotterX + col*(itemWidth+itemPadding)
 	y := plotterY + row*(itemHeight+itemPadding)
 
-	view, err := gui.SetView(item.Label, x, y, x+itemWidth, y+itemHeight)
-	if err != nil && err != gocui.ErrUnknownView {
+	view, err := gui.SetView(item.Label, x, y, x+itemWidth, y+itemHeight, 0)
+	if !gocui.IsUnknownView(err) {
 		return err
 	}
 

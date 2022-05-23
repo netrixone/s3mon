@@ -11,7 +11,7 @@ import (
 
 const (
 	prog        = "s3mon"
-	version     = "1.1"
+	version     = "1.2"
 	author      = "stuchl4n3k"
 	description = "s3mon - simple service status monitor v" + version + " by " + author
 )

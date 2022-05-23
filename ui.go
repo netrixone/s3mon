@@ -3,20 +3,23 @@ package main
 import (
 	"fmt"
 	"github.com/awesome-gocui/gocui"
+	"math"
 	"net"
 	"strconv"
 	"strings"
 )
 
 var (
-	toolBarHeight = 2
-	itemWidth     = 10
-	itemHeight    = 4
-	itemPadding   = 1
-	maxX          = 0
-	maxY          = 0
-	plotterX      = 0
-	plotterY      = 0
+	toolBarHeight   = 2
+	itemWidth       = 10
+	itemHeight      = 4
+	itemPadding     = 1
+	itemAspectRatio = 0.0
+	maxX            = 0
+	maxY            = 0
+	cols            = 0
+	plotterX        = 0
+	plotterY        = 0
 )
 
 func initGui(config *Config) *gocui.Gui {
@@ -28,6 +31,7 @@ func initGui(config *Config) *gocui.Gui {
 	maxX, maxY = gui.Size()
 	gui.Mouse = true
 
+	initDimensions(len(config.Items))
 	createToolBarView(gui)
 	createMonitoringView(config.Items, gui)
 
@@ -39,6 +43,25 @@ func initGui(config *Config) *gocui.Gui {
 	}
 
 	return gui
+}
+
+func initDimensions(itemsCount int) {
+	itemsCount = itemsCount + itemsCount%4
+	width, height := maxX, maxY-toolBarHeight-itemPadding*2
+	space := width * height
+	itemAspectRatio = float64(height) / float64(width)
+	itemSpace := float64(space) / float64(itemsCount)
+	itemWidth = int(math.Sqrt(itemSpace / itemAspectRatio))
+	itemHeight = int(float64(itemWidth) * itemAspectRatio)
+
+	cols = width / itemWidth
+	if cols > 1 {
+		totalPadding := (cols - 1) * itemPadding
+		paddingRemainder := width%itemWidth - 1
+		if totalPadding > paddingRemainder {
+			itemWidth = itemWidth - int(math.Ceil(float64(totalPadding-paddingRemainder)/float64(cols)))
+		}
+	}
 }
 
 func createToolBarView(gui *gocui.Gui) {
@@ -54,7 +77,7 @@ func createToolBarView(gui *gocui.Gui) {
 
 func createMonitoringView(items []*Item, gui *gocui.Gui) {
 	for i, item := range items {
-		if err := createMonitoringItemView(item, i, maxX, maxY, gui); err != nil {
+		if err := createMonitoringItemView(item, i, gui); err != nil {
 			LogPanic(err.Error())
 		}
 	}
@@ -62,16 +85,19 @@ func createMonitoringView(items []*Item, gui *gocui.Gui) {
 	plotterY += itemHeight + itemPadding
 }
 
-func createMonitoringItemView(item *Item, col int, maxX int, maxY int, gui *gocui.Gui) error {
-	itemsPerLine := maxX / (itemWidth + itemPadding)
+func createMonitoringItemView(item *Item, col int, gui *gocui.Gui) error {
 	row := 0
 
-	if col >= itemsPerLine {
-		row = col / itemsPerLine
-		col %= itemsPerLine
+	if col >= cols {
+		row = col / cols
+		col %= cols
 	}
 
-	x := plotterX + col*(itemWidth+itemPadding)
+	xPadding := itemPadding
+	if col == 0 {
+		xPadding = 0
+	}
+	x := plotterX + col*(itemWidth+xPadding)
 	y := plotterY + row*(itemHeight+itemPadding)
 
 	view, err := gui.SetView(item.Label, x, y, x+itemWidth, y+itemHeight, 0)
